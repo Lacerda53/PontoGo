@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Container, Press} from './styles';
+import { Container, Press, Header, Body, Footer } from './styles';
 import Geolocation from 'react-native-geolocation-service';
 
 
@@ -37,11 +37,16 @@ export default class Main extends Component {
   render() {
     return (
       <Container>
-        <Text>{this.state.latitude}</Text>
-        <Text>{this.state.longitude}</Text>
-        <Press>
-          <Icon name="fingerprint" size={100} color="#1e71eb"/>
-        </Press>
+        <Header></Header>
+        <Body>
+          <Text>{this.state.latitude}</Text>
+          <Text>{this.state.longitude}</Text>
+        </Body>
+        <Footer>
+          <Press>
+            <Icon name="fingerprint" size={100} color="#fff" />
+          </Press>
+        </Footer>
       </Container>
     );
   }
