@@ -15,11 +15,10 @@ import {
   Date,
   Day,
   Time,
-  BorderMargin,
+  ManhaText,
   Localization,
-  HeaderDate,
+  TitlePeriod,
   ContentTime,
-  BorderView
 } from './styles';
 import api from '~/services/api';
 import Geolocation from 'react-native-geolocation-service';
@@ -30,7 +29,7 @@ const { width, height } = Dimensions.get('window')
 const SCREEN_HEIGHT = height
 const SCREEN_WIDTH = width
 const ASPECT_RATIO = width / height
-const LATITUDE_DELTA = 0.004
+const LATITUDE_DELTA = 0.0010
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 export default class Main extends Component {
@@ -103,24 +102,17 @@ export default class Main extends Component {
             </MoreButton>
           </HistoricHeader>
           <ActivityIndicator size="large" animating={this.state.isLoading} />
-          <FlatList
-            data={this.state.pontos}
-            renderItem={({ item }) =>
-              <Card>
-                <BorderView>
-                  <BorderMargin />
-                </BorderView>
-                <HeaderDate>
-                  <Date>{item.dtPonto}</Date>
-                  <Day>Sex</Day>
-                </HeaderDate>
-                <ContentTime>
-                  <Time>08:00</Time>
-                  <Localization>{item.latitude}</Localization>
-                </ContentTime>
-              </Card>
-            }
-          />
+          <Card>
+            <TitlePeriod>
+              <ManhaText></ManhaText>
+            </TitlePeriod>
+              <Date></Date>
+              <Day>Sex</Day>
+            <ContentTime>
+              <Time>08:00</Time>
+              <Localization></Localization>
+            </ContentTime>
+          </Card>
         </Body>
         <Footer>
           <Press onPress={() => this.hitPoint()}>

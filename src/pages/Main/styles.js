@@ -13,6 +13,7 @@ export const Header = styled.View`
 export const Body = styled.View`
   flex: 1;
   padding: 5%;
+  background-color: #f5f5f5;
 `;
 
 export const HistoricHeader = styled.View`
@@ -50,7 +51,11 @@ export const Press = styled.TouchableOpacity`
 `;
 
 export const Card = styled.View`
-  border: 1px;
+  flex: 1;
+  border: 3px;
+  border-color: #f0f0f0;
+  border-radius: 15px;
+  background-color: #fff;
 `;
 
 export const BorderView = styled.View`
@@ -60,7 +65,7 @@ export const BorderView = styled.View`
 export const BorderMargin = styled.View`
 `;
 
-export const HeaderDate = styled.View`
+export const TitlePeriod = styled.View`
 `;
 
 export const ContentTime = styled.View`
