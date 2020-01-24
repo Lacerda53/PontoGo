@@ -1,11 +1,31 @@
 import React, { Component } from 'react';
-import { Text, Dimensions } from 'react-native';
+import { Text, Dimensions, FlatList, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Container, Press, Header, Body, Footer } from './styles';
+import {
+  Container,
+  Press,
+  Header,
+  Body,
+  Footer,
+  HistoricHeader,
+  TitleHistoric,
+  MoreText,
+  MoreButton,
+  Card,
+  Date,
+  Day,
+  Time,
+  BorderMargin,
+  Localization,
+  HeaderDate,
+  ContentTime,
+  BorderView
+} from './styles';
+import api from '~/services/api';
 import Geolocation from 'react-native-geolocation-service';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
-const {width, height} = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
 const SCREEN_HEIGHT = height
 const SCREEN_WIDTH = width
@@ -22,18 +42,19 @@ export default class Main extends Component {
     headerTintColor: "#fff",
     headerTitleStyle: {
       fontWeight: "bold",
-      textAlign: "center",
-      flex: 1
+      textAlign: "center"
     },
     headerTitleAlign: 'center'
   };
   state = {
     latitude: 0,
     longitude: 0,
+    pontos: [],
+    isLoading: false,
     error: null
   }
   componentDidMount() {
-    Geolocation.getCurrentPosition(position => {
+    Geolocation.watchPosition(position => {
       this.setState({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
@@ -41,6 +62,24 @@ export default class Main extends Component {
     }, error => this.setState({ error: error.message }),
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
+    this.loadPontos();
+  }
+  loadPontos = async () => {
+    this.setState({ isLoading: true })
+    const response = await api.get("/ponto");
+    const repositories = await response.data;
+    this.setState({
+      pontos: repositories, isLoading: false
+    })
+  };
+  hitPoint = async () => {
+    this.setState({ isLoading: true })
+    await api.post("/ponto", {
+      'latitude': this.state.latitude,
+      'longitude': this.state.longitude
+    });
+    this.loadPontos();
+    this.setState({ isLoading: false })
   }
   render() {
     return (
@@ -54,18 +93,38 @@ export default class Main extends Component {
               longitude: this.state.longitude,
               latitudeDelta: LATITUDE_DELTA,
               longitudeDelta: LONGITUDE_DELTA,
-            }} >
-              <Marker coordinate={this.state}/>
-            </MapView>
+            }} showsUserLocation />
         </Header>
         <Body>
-
-          <Text>{this.state.latitude}</Text>
-          <Text>{this.state.longitude}</Text>
+          <HistoricHeader>
+            <TitleHistoric>Sexta 24, Janeiro</TitleHistoric>
+            <MoreButton>
+              <MoreText>Ver Mais</MoreText>
+            </MoreButton>
+          </HistoricHeader>
+          <ActivityIndicator size="large" animating={this.state.isLoading} />
+          <FlatList
+            data={this.state.pontos}
+            renderItem={({ item }) =>
+              <Card>
+                <BorderView>
+                  <BorderMargin />
+                </BorderView>
+                <HeaderDate>
+                  <Date>{item.dtPonto}</Date>
+                  <Day>Sex</Day>
+                </HeaderDate>
+                <ContentTime>
+                  <Time>08:00</Time>
+                  <Localization>{item.latitude}</Localization>
+                </ContentTime>
+              </Card>
+            }
+          />
         </Body>
         <Footer>
-          <Press>
-            <Icon name="fingerprint" size={100} color="#fff" />
+          <Press onPress={() => this.hitPoint()}>
+            <Icon name="fingerprint" size={85} color="#fff" />
           </Press>
         </Footer>
       </Container>
